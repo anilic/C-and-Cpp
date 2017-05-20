@@ -1,0 +1,212 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+//remastered version of homework1
+
+void roulette(int bet_type, int specific_num, char *status, int *slot_number, int number_color[36][2])
+
+{
+	srand(time(NULL));
+	*slot_number = 1+rand()%35;
+
+	if(bet_type == 1 || bet_type == 2 || bet_type == 3 || bet_type  == 4 || bet_type == 5)
+	{
+		if(*slot_number == 0)
+			*status == 'L';
+	}
+	else
+	printf("WRONG BET TYPE!!!");
+
+	if(bet_type == 1)
+	{
+		if(*slot_number % 2 == 1)
+			*status = 'W';
+		else
+			*status = 'L';
+		if(*slot_number == 0)
+			*status = 'L';
+	}
+	
+	else if(bet_type == 2)
+	{
+		if(*slot_number %2 == 0)	
+			*status = 'W';		
+		else
+			*status = 'L';
+	}
+	else if(bet_type == 3)
+	{
+		if(*slot_number == specific_num)
+			*status = 'W';
+		else
+			*status = 'L';
+	}
+	else if(bet_type == 4)
+	{
+		if(number_color[*slot_number][1]==0)
+		*status = 'W';
+		else if(number_color[*slot_number][1]==1)
+		*status = 'L';
+	}
+	else if(bet_type == 5)
+	{
+		if(number_color[*slot_number][1]==1)
+		*status = 'W';
+		else if(number_color[*slot_number][1]==0)
+		*status = 'L';
+	}
+}
+
+int main()
+
+{
+	int spin=1, bet_type, specific_num, slot_number, number_color[36][2]={{0,-1},{1,0},{2,1},{3,0},{4,1},{5,0},{6,1},{7,0},{8,1},{9,0},{10,1},{11,1},{12,0},{13,1},{14,0},{15,1},{16,0},{17,1},{18,0},{19,0},{20,1},{21,0},{22,1},{23,0},{24,1},{25,0},{26,1},{27,0},{28,1},{29,1},{30,0},{31,1},{32,0},{33,1},{34,0},{35,1}};
+	int st_Money, bet_Money; //money variables
+	char status, ch;
+		
+	printf("Enter a start account for the game $:"); scanf("%d", &st_Money);
+	
+	do
+	{
+		printf("\nSpin: %d\n", spin);
+		
+		do
+		{
+			printf("Enter the bet amount $:"); scanf("%d", &bet_Money);
+		}while(bet_Money<0);
+		
+		while(bet_Money>st_Money)
+		{
+			printf("Your bet amount can not be greater than your start account!\n");
+			printf("Please enter your bet amount again:"); scanf("%d", &bet_Money);
+		}
+		
+		printf("\n\t1: Bet on an odd number\n");
+		printf("\t2: Bet on an even number\n");
+		printf("\t3: Bet on a specific number\n");
+		printf("\t4: Bet on red color\n");
+		printf("\t5: Bet on black color\n\n");
+		
+		do
+		{
+			printf("Enter your choice:"); scanf("%d", &bet_type);
+		}while(bet_type>5 || bet_type<=0);
+		
+		if(bet_type == 1 || bet_type == 2)
+		{
+			roulette(bet_type, specific_num, &status, &slot_number, number_color);
+			
+			if(status == 'W')
+			{
+				printf("The ball fell in slot numbered %d.\n", slot_number);
+				printf("YOU WON THE BET.\n");
+				printf("Initial account $: %d\n", st_Money);
+				st_Money=st_Money+bet_Money;
+				printf("Final account $: %d\n", st_Money);
+				if(st_Money==0)
+					break;			
+			}
+			else
+			{
+				printf("The ball fell in slot numbered %d.\n", slot_number);
+				printf("YOU LOST THE BET.\n");
+				printf("Initial account $: %d\n", st_Money);
+				st_Money=st_Money-bet_Money;
+				printf("Final account $: %d\n", st_Money);
+				if(st_Money==0)
+					break;
+			}
+		}
+		
+		else if(bet_type == 3)
+		{
+			roulette(bet_type, specific_num, &status, &slot_number, number_color);
+			
+			printf("Your specific number:"); scanf("%d", &specific_num);
+			
+			if(status == 'W')
+			{
+				printf("The ball fell in slot numbered %d.\n", slot_number);
+				printf("YOU WON THE BET.\n");
+				printf("Initial account $: %d\n", st_Money);
+				st_Money=st_Money+(bet_Money*35);
+				printf("Final account $: %d\n", st_Money);
+				if(st_Money==0)
+					break;			
+			}
+			else
+			{
+				printf("The ball fell in slot numbered %d.\n", slot_number);
+				printf("YOU LOST THE BET.\n");
+				printf("Initial account $: %d\n", st_Money);
+				st_Money=st_Money-bet_Money;
+				printf("Final account $: %d\n", st_Money);
+				if(st_Money==0)
+					break;
+			}
+		}
+		
+		else if(bet_type == 4)
+		{
+			roulette(bet_type, specific_num, &status, &slot_number, number_color);
+			
+			if(status == 'W')
+			{
+				printf("The ball fell in slot numbered %d.\n", slot_number);
+				printf("YOU WON THE BET.\n");
+				printf("Initial account $: %d\n", st_Money);
+				st_Money=st_Money+bet_Money;
+				printf("Final account $: %d\n", st_Money);
+				if(st_Money==0)
+					break;		
+			}
+			else
+			{
+				printf("The ball fell in slot numbered %d.\n", slot_number);
+				printf("YOU LOST THE BET.\n");
+				printf("Initial account $: %d\n", st_Money);
+				st_Money=st_Money-bet_Money;
+				printf("Final account $: %d\n", st_Money);
+				if(st_Money==0)
+					break;
+			}
+		}
+		
+		else if(bet_type == 5)
+		{
+			roulette(bet_type, specific_num, &status, &slot_number, number_color);
+			
+			if(status == 'W')
+			{
+				printf("The ball fell in slot numbered %d.\n", slot_number);
+				printf("YOU WON THE BET.\n");
+				printf("Initial account $: %d\n", st_Money);
+				st_Money=st_Money+bet_Money;
+				printf("Final account $: %d\n", st_Money);
+				if(st_Money==0)
+					break;		
+			}
+			else
+			{
+				printf("The ball fell in slot numbered %d.\n", slot_number);
+				printf("YOU LOST THE BET.\n");
+				printf("Initial account $: %d\n", st_Money);
+				st_Money=st_Money-bet_Money;
+				printf("Final account $: %d\n", st_Money);
+				if(st_Money==0)
+					break;
+			}
+		}
+		
+		printf("\nEnter Y/y to continue or any other key to quit:"); scanf(" %c", &ch);
+		printf("\n------------------------------\n");
+		spin++;
+	}while(ch=='Y' || ch=='y' && st_Money>0);
+	
+	printf("Bye.");
+	
+	printf("\n\n");
+	system("pause");
+	return(0);
+}
