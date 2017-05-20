@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+/* 
+  Purpose of this program is following:
+  1st: Reading file named such as "coordinates.txt" and copying included coordinates to array of structure.
+  2nd: Consider there are 2 sets named such as "set1" and "set2".
+  3rd: Set1's origin is (5,5) and Set2's origin is (-5,-5).
+  4th: By using decideSet function, we are going to find whether indicated number belongs to set1 or set2.
+  5th: Scanning a specific index number to reach that point's coordinates, in main function.
+  6th: By using euclideanDistance function, we are going to find the closest coordinate to our specified coordinate.
+*/
+
+
+struct coord{
+	double x;
+	double y;
+	char set[20];
+};
+ 
+struct coord toDecide[20];
+
+void decideSet(struct coord toDecide[]);
+double euclideanDistance(double firstx, double firsty, double secondx, double secondy);
+
+int main()
+{
+	FILE *coordinates;
+	int i, j, index=1, pt;
+	double temp=123123, distance=0;
+	
+	coordinates = fopen("coordinates.txt", "r");
+	if(coordinates==NULL)
+	{
+		printf("Can not open the file!");
+	}
+	
+	else
+	{
+		for(i=0;i<20;i++)
+		{
+			fscanf(coordinates, "%lf%lf", &toDecide[i].x, &toDecide[i].y);
+		}
+		
+		decideSet(toDecide);
+		
+		printf("\n\nEnter an index to find closest point to it:"); scanf("%d", &pt);
+		pt-=1;
+		
+		for(i=0;i<20;i++)
+		{
+			if(i!=pt)
+			{
+				distance=euclideanDistance(toDecide[i].x, toDecide[i].y, toDecide[pt].x, toDecide[pt].y);
+				
+				if(distance<temp)
+				{
+					temp=distance;
+					index=i+1;
+				}
+			}
+		}
+		
+		printf("Closest point to your selected point's index is: %d x = %.2f, y = %.2f", index, toDecide[index-1].x, toDecide[index-1].y);
+	}	
+	
+	fclose(coordinates);
+
+	printf("\n\n");
+	system("pause");
+	return(0);
+	
+}
+
+double euclideanDistance(double firstx, double firsty, double secondx, double secondy)
+{
+	double distance;
+	distance=sqrt(pow(secondy-firsty,2)+pow(secondx-firstx,2));
+	return distance;
+}
+
+void decideSet(struct coord toDecide[])
+{
+	int i, index=1;
+	for(i=0;i<20;i++)
+	{
+		if(toDecide[i].x<0)
+		{
+			printf("Index %d: (%.2f, %.2f) and this point belongs to set 2.\n", index, toDecide[i].x, toDecide[i].y);
+			index+=1;
+		}
+		
+		else
+		{
+			printf("Index %d: (%.2f, %.2f) and this point belongs to set 1.\n", index, toDecide[i].x, toDecide[i].y);
+			index+=1;
+		}
+	}	
+}
