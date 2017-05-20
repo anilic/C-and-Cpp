@@ -1,0 +1,320 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+/*
+	Purpose of this program is in following:
+  1st:  In main program, user enters a key phrase to generate a 5x5 matrix by using that key phrase.
+  2nd:  After that, by calling GenerateCipherMatrix function, we are sending empty matrix and key phrase to function.
+  3rd:  Our function firstly should check that if there is any duplicate characters in our keyphrase. If so, function
+        shouldn't print same sacond character. After this check, if our key phrase's length is less than 25, then we
+        are going to fill rest of the matrix by using alphabeth.
+        Important note in here is that alphabeth's characters shouldn't be same with our key phrase's characters. And
+        also, for no reason i think, we are not able to use 'J' character in our matrix.
+  4th:  While creating the matrix, we also should consider following rules:
+          1.  If both letters are the same add an "x" after the first letter. Encrypt the new pair and continue. If only
+          one letter is left, add “q” next to the letter. (E.g. he ll ow or ld should be digrammed as “he lx lo wo rl dq”)
+          2.  If the pair letters appear on the same row of your table, replace them with the letters to their immediate 
+          right respectively (E.g. because ‘e’ and ‘x’ are on the same row, ‘e’ should be encrypted as ‘x’ and ‘x’ should be encrypted 
+          as ‘m’).
+          3.  If the letter is the last letter of the row, immediate right of the letter is the first letter in the same row.
+          (E.g: because ‘r’ and ‘m’ are on the same row, the letter ‘r’ is encrypted as ‘e’ and the letter ‘m’ is encrypted as ‘i’).
+          4.  If the letters appear on the same column of your table, replace them with the letters immediately below respectively. 
+          (E.g. because ‘c’ and ‘n’ are on the same column, the letter ‘c’ is encrypted as ‘n’ and the letter ‘n’ is encrypted as ‘u’).
+          5.  If the letter is the last letter in the column, immediate bottom of the letter is the first letter in the same
+          column. (E.g: because ‘g’ and ‘w’ are on the same row, the letter ‘g’ is encrypted as ‘q’ and the letter ‘w’ is encrypted 
+          as ‘y’).
+          6.  If the letters are not on the same row or column, replace them with the letters on the same row respectively but at 
+          the other pair of corners of the rectangle defined by the original pair. The order is important – the first letter of the 
+          encrypted pair is the one that lies on the same row as the first letter of the plaintext pair. (E.g because the letters ‘h’ 
+          and ‘e’ are not on the same row or column, ‘h’ is encrypted as ‘d’, and ‘e’ is encrypted as ‘m’).
+*/
+
+void GetColumn_RowIndex(char cipherMatrix[5][5],char letter, int *colIndex, int *rowIndex)
+{
+	int i,j;
+	for(i=0;i<5;i++)
+	{
+		for(j=0;j<5;j++)
+		{
+			if(cipherMatrix[i][j]==letter)
+			{
+				*colIndex=i;
+				*rowIndex=j;
+			}
+		}
+	}
+}
+
+int InSameRow(char cipherMatrix[][5],char firstLetter,char secondLetter)
+{
+	int xfirst, yfirst, xlast, ylast, i, j;
+	
+	for(i=0;i<5;i++)
+	{
+		for(j=0;j<5;j++)
+		{
+			if(cipherMatrix[i][j]==firstLetter)
+			{
+				xfirst=i;
+				yfirst=j;
+			}
+		}
+	}
+	
+	for(i=0;i<5;i++)
+	{
+		for(j=0;j<5;j++)
+		{
+			if(cipherMatrix[i][j]==secondLetter)
+			{
+				xlast=i;
+				ylast=j;
+			}
+		}
+	}
+	
+	if(xfirst==xlast)
+	   return(1);
+	else
+	   return(0);
+}
+
+int InSameColumn(char cipherMatrix[][5],char firstLetter,char secondLetter)
+{
+	int xfirst, yfirst, xlast, ylast, i, j;
+	
+	for(i=0;i<5;i++)
+	{
+		for(j=0;j<5;j++)
+		{
+			if(cipherMatrix[i][j]==firstLetter)
+			{
+				xfirst=i;
+				yfirst=j;
+			}
+		}
+	}
+	
+	for(i=0;i<5;i++)
+	{
+		for(j=0;j<5;j++)
+		{
+			if(cipherMatrix[i][j]==secondLetter)
+			{
+				xlast=i;
+				ylast=j;
+			}
+		}
+	}
+	
+	if(yfirst==ylast)
+	   return(1);
+	else
+	   return(0);
+}
+
+void GenerateCipherMatrix(char cipherMatrix[5][5], char key[])
+{
+	char alphabet[25]={'a','b','c','d','e','f','g','h','i','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+	char newalpha[25]={'\0'}, fixing[20]={'\0'};
+	int i=0, dum=0, j, x=0;
+	
+	do
+	{
+		dum=0;
+		
+		for(j=0;j<=i;j++)
+		{
+			if(fixing[j]==key[i])
+	  			dum=1;
+		}
+			
+		if(dum==0)
+		{
+			fixing[x]=key[i];
+       		x++;
+		}
+		i++;	
+	}while(key[i]!='\0');
+	
+	x=strlen(fixing);
+	
+	for(i=0;i<x;i++)
+	{
+		newalpha[i]=fixing[i];
+	}
+	
+	for(i=0;i<25;i++)
+	{
+		dum=0;
+		
+		for(j=25;j>=0;j--)
+		{
+			if(alphabet[i]==newalpha[j])
+		    	dum=1;
+		}
+		
+		if(dum==0)
+		{
+		 	newalpha[x]=alphabet[i];
+		 	x++;
+		} 
+	}
+	
+	x=0;
+	
+	for(i=0;i<5;i++)
+	{
+		for(j=0;j<5;j++)
+		{
+			cipherMatrix[i][j]=newalpha[x];
+			x++;
+		}
+	}
+}
+
+int main()
+{
+	char sentence[100], key[20], cipherMatrix[5][5], groupped[200]={'\0'};
+	int i, j, ct, x, y, firstx, firsty, secondx, secondy, selection;
+	
+	printf("Enter the key phrase:");
+	gets(key);
+	
+	GenerateCipherMatrix(cipherMatrix,key);
+	printf("\nCipher Matrix is:\n");
+	
+	for(i=0;i<5;i++)
+	{
+		for(j=0;j<5;j++)
+		{
+			printf("%c\t",cipherMatrix[i][j]);    
+		}
+		printf("\n");
+	}
+	printf("\n");
+	
+	printf("Enter the sentence:");
+	gets(sentence);
+	
+	j=0;
+	i=0;
+	ct=0;
+	 
+	do
+	{
+		groupped[j]=sentence[i];
+	 	
+		j++;
+	    ct++;
+	    
+	    if(ct%2==0 && ct!=0)
+		{
+	    	groupped[j]=' ';
+	    	j++;
+		}
+		
+		if(sentence[i]==sentence[i+1])
+		{
+		   	groupped[j]='x';
+		   	j++;
+		   	ct++;
+		    
+			if(ct%2==0 && ct!=0)
+			{
+		    	groupped[j]=' ';
+		    	j++;
+			}
+	    }
+	    
+		i++;
+	}while(sentence[i]!='\0'); 
+	
+	if(strlen(groupped)%3!=0)
+	{
+	   	i=strlen(groupped);
+		groupped[i]='q'; 
+	}
+	
+	j=strlen(groupped);
+	
+	printf("\nDigrammed text is: ");
+	
+	for(i=0;i<j;i++)
+	{
+	  	printf("%c",groupped[i]);
+	}
+	
+	printf("\n\nEnter 1 to encrypt or 2 to decrypt:"); scanf("%d", &selection);
+	  	
+	if(selection==1)
+	{
+	  	for(i=0;i<j;i+=3)
+		{
+		  	x = InSameRow(cipherMatrix, groupped[i], groupped[i+1]);
+		  	y = InSameColumn(cipherMatrix, groupped[i], groupped[i+1]);
+		  	GetColumn_RowIndex(cipherMatrix, groupped[i], &firstx, &firsty);
+		  	GetColumn_RowIndex(cipherMatrix, groupped[i+1], &secondx, &secondy);
+	  	 
+		    if(x==0 && y==0)
+		    {
+	  	 		groupped[i]=cipherMatrix[firstx][secondy];
+	  	 		groupped[i+1]=cipherMatrix[secondx][firsty];
+		    }
+		    
+		 	if(x==1)
+			{
+		 		groupped[i]=cipherMatrix[firstx][(firsty+1)%5];
+		 		groupped[i+1]=cipherMatrix[secondx][(secondy+1)%5];
+		    }
+		    
+		 	if(y==1)
+			{
+		 		groupped[i]=cipherMatrix[(firstx+1)%5][firsty];
+		 		groupped[i+1]=cipherMatrix[(secondx+1)%5][secondy];
+			}
+	  	}
+	  	
+		printf("\nEncrypted text is: ");
+	}
+	
+	if(selection==2)
+	{
+		for(i=0;i<j;i+=3)
+		{
+		  	x=InSameRow(cipherMatrix,groupped[i],groupped[i+1]);
+		  	y=InSameColumn(cipherMatrix,groupped[i],groupped[i+1]);
+		  	
+			GetColumn_RowIndex(cipherMatrix,groupped[i],&firstx,&firsty);
+		  	GetColumn_RowIndex(cipherMatrix,groupped[i+1],&secondx,&secondy);
+	  	 	
+			if(x==0 && y==0)
+			{
+	  	 		groupped[i]=cipherMatrix[firstx][secondy];
+	  	 		groupped[i+1]=cipherMatrix[secondx][firsty];
+		    }
+		    
+		 	if(x==1)
+			{
+		 		groupped[i]=cipherMatrix[firstx][(firsty-1)%5];
+		 		groupped[i+1]=cipherMatrix[secondx][(secondy-1)%5];
+		 	}
+		 	
+		 	if(y==1)
+			{
+		 		groupped[i]=cipherMatrix[(firstx-1)%5][firsty];
+		 		groupped[i+1]=cipherMatrix[(secondx-1)%5][secondy];
+			}
+	  	}
+	  	
+		printf("\nDecrypted text is: ");
+	}  
+	
+	puts(groupped);
+	
+	printf("\n\n");
+	
+	system("pause");
+	return(0);
+}
