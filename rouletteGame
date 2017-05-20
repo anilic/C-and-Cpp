@@ -1,0 +1,125 @@
+/* This code has a lot of errors. It's able to compile and execute, but there are couple of errors in it. */
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+void fcn(int bet_type, int specific_num, char *status, int *slot_number)
+{
+	srand(time(NULL));
+	*slot_number = 1+rand()%35;
+	
+	if(bet_type==1)
+	{
+		if(*slot_number % 2 == 1)
+		{
+			*status = 'W';
+		}
+		else
+		{
+			*status = 'L';
+		}
+		if(*slot_number == 0)
+		{
+			*status = 'L';
+		}
+	}
+	
+	else if(bet_type == 2)
+	{
+		if(*slot_number %2 == 0)
+		{
+			*status = 'W';
+		}
+		else
+		{
+			*status = 'L';
+		}
+	}
+	else if(bet_type == 3)
+	{
+		if(*slot_number == specific_num)
+		{
+			*status = 'W';
+		}
+		else
+		{
+			*status = 'L';
+		}
+	}
+}
+int main()
+{
+	int bet_type, st_Money, bet_money, specific_num=0, slot_number, spin=1;
+	char status, ch;
+	
+	printf("Enter a starting account $:"); scanf("%d", &st_Money);
+	
+	do{
+		
+		printf("Spin: %d\n", spin);
+		
+		printf("Enter bet money:"); scanf("%d", &bet_money);
+		if(bet_money > st_Money)
+		{
+			break;
+		}
+		printf("Enter '1' to bet on an odd number, '2' to bet on an even number, or '3' to bet on a specific number:"); scanf("%d", &bet_type);
+		
+		if(bet_type==3)
+		{
+			printf("Enter a number between 1-35:"); scanf("%d", &specific_num);
+			fcn(bet_type, specific_num, &status, &slot_number);
+			if(status=='W')
+			{
+				printf("\nThe ball fell in the slot numbered %d.\n", slot_number);
+				printf("YOU WON THE BET.\n");
+				printf("Initial account $: %d\n", st_Money);
+				st_Money += (bet_money*35);
+				printf("Final account $: %d\n", st_Money);
+			}
+			else
+			{
+				printf("\nThe ball fell in the slot numbered %d.\n", slot_number);
+				printf("YOU LOST THE BET.\n");
+				printf("Initial account $: %d\n", st_Money);
+				st_Money -= bet_money;
+				printf("Final account $: %d\n", st_Money);
+			}
+		}
+		else
+		{
+			fcn(bet_type, specific_num, &status, &slot_number);
+			if(status=='W')
+			{
+				printf("\nThe ball fell in the slot numbered %d.\n", slot_number);
+				printf("YOU WON THE BET.\n");
+				printf("Initial account $: %d\n", st_Money);
+				st_Money += bet_money;
+				printf("Final account $: %d\n", st_Money);
+			}
+			else
+			{
+				printf("\nThe ball fell in the slot numbered %d.\n", slot_number);
+				printf("YOU LOST THE BET.\n");
+				printf("Initial account $: %d\n", st_Money);
+				st_Money -= bet_money;
+				printf("Final account $: %d\n", st_Money);
+			}
+		}
+		
+		if(st_Money == 0)
+		{
+			break;
+		}
+		
+		spin++;
+		printf("Do you want to continue? Enter Y or N:"); scanf(" %c", &ch);
+		printf("\n--------------------------------\n\n");	
+		
+	}while(ch!='N' || ch=='Y' || st_Money!=0);
+	
+	printf("\nBYE LOSER\n\n");
+	system("pause");
+	return(0);
+}
