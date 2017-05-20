@@ -2,7 +2,12 @@
 #include <stdlib.h>
 #include <time.h>
 
-//remastered version of homework1
+/*
+	-	Remastered version of homework1.
+	-	Difference from homework is that in this program, program also lets you to decide whether you are going 
+		to bet on red or black.
+*/
+
 
 void roulette(int bet_type, int specific_num, char *status, int *slot_number, int number_color[36][2])
 
