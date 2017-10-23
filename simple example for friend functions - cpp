@@ -1,0 +1,54 @@
+#include "stdafx.h"
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+class ComputeCircle
+{
+	private:
+		double area, radius;
+	public:
+		ComputeCircle(double radius);
+		
+		void setRadius(double area);
+		double getRadius();
+
+		friend double multiplyAreaWithPi(ComputeCircle); //declaration of friend function
+};
+
+void ComputeCircle::setRadius(double radius)
+{
+	this->radius = radius;
+}
+
+double ComputeCircle::getRadius()
+{
+	return pow(radius, 2);
+}
+
+ComputeCircle::ComputeCircle(double radius)
+{
+	area = 1.0;
+	setRadius(radius); //we need to set radius value in constructor, otherwise there will be a random number displayed in output from ram
+}
+
+double multiplyAreaWithPi(ComputeCircle r) //giving functionality to friend function (pass by reference, r)
+{
+	return r.radius *= 3.14;
+}
+
+int main()
+{
+	double radius;
+
+
+	cout << "Enter radius: "; cin >> radius;
+
+	ComputeCircle circle(radius);
+
+	cout << "Area: " << multiplyAreaWithPi(circle) << endl; //we can print the result by using friend function since it's computing the area
+
+
+	return 0;
+}
