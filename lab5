@@ -1,0 +1,47 @@
+#include "stdafx.h"
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+class Coordinate
+{
+private:
+	double x, y;
+
+public:
+	Coordinate(double a = 0, double b = 0) :x(a), y(b) { }
+
+	void setX(double x);
+	void setY(double y);
+
+	friend double calLength(Coordinate &p1, Coordinate &p2);
+};
+
+void Coordinate::setX(double x)
+{
+	this->x = x;
+}
+void Coordinate::setY(double y)
+{
+	this->y = y;
+}
+
+double calLength(Coordinate &p1, Coordinate &p2)
+{
+	return sqrt(pow((p1.x - p2.x), 2) + pow((p1.y - p2.y), 2));
+}
+
+int main()
+{
+	double x1, x2, y1, y2;
+
+	cout << "Enter two coordinates: "; cin >> x1 >> y1 >> x2 >> y2;
+
+	Coordinate point1(x1, y1);
+	Coordinate point2(x2, y2);
+
+	cout << "The distance between two points is: " << calLength(point1, point2) << endl;
+
+    return 0;
+}
