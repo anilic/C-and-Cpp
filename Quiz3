@@ -1,3 +1,62 @@
+COMPE 225 LAB 6 /2017-2018 Fall
+03/11/2017
+QUIZ 3
+Create a class with the following properties:
+Class Name: Storage
+Class Purpose: to hold information about a storage type. It should hold the storage’s type (byte, kilobyte, megabyte ‘b’, ‘k’, ‘m’ respectively) and the amount of the storage.
+Member Variables: Should have private accessibility.
+•	Storage amount : int
+•	Storage type (‘b/B’, ‘k/K’, ‘m/M’) : char
+•	Hint: You can hold another variable in order to make the calculations. You can create an integer variable typeScore and assign scores to this variable according to the storage type.
+Public Member Functions:
+•	You should create a parameterized and a default constructor. Default constructor should assing 1 to the amount and ‘b’ to the storage type. Parameterized one should assign parameters to the corresponding variables.
+•	Hint: Write a CalculateTypeScore() method in order to calculate the storage score according to the storage type. You can use the following scoring: (You can assign 1 to the types of byte (‘b/B’))
+	1 Kilobyte = 1024 Bytes
+	1 Megabyte = 1048576 Bytes
+
+•	Overload ==, <, <=, >, >=, != and = operators. All of them should be overloaded according to the storage object storage amount. For example == operator should return true if the participating storage’s store amounts are equal. Same thing applies for all the other comparison operators.
+•	Write Getters&Setters for all the variables.
+In the main program you should:
+1.	Take inputs to create two storage objects (you’re going to take 2 characters and 2 integers).
+2.	Create two storage objects with these inputs.
+3.	Compare these storage objects with the operators you’ve just overloaded.
+
+
+Sample Run 1:
+Enter the first storage type:
+b/B for Btye
+k/K for Kilobyte
+m/M for Megabyte
+M
+Enter first storage amount:1
+
+Enter the second storage type:
+b/B for Btye
+k/K for Kilobyte
+m/M for Megabyte
+k
+Enter second storage amount:1024
+Storages are equal.
+
+Sample Run 2:
+Enter the first storage type:
+b/B for Btye
+k/K for Kilobyte
+m/M for Megabyte
+B
+Enter first storage amount:15000
+
+Enter the second storage type:
+b/B for Btye
+k/K for Kilobyte
+m/M for Megabyte
+M
+Enter second storage amount:3
+Second storage is bigger.
+
+
+-----------------------------------------------------------------------
+
 // Quiz3 - Anıl Çelik.cpp : Defines the entry point for the console application.
 //
 
