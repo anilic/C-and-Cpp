@@ -1,0 +1,124 @@
+// Quiz3 - Anıl Çelik.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+#include <iostream>
+
+using namespace std;
+
+class Storage
+{
+	private: 
+		int amount, temp;
+		char type;
+	public:
+		Storage(int amount = 1, char type = 'c') :amount(amount), type(type) { CalculateTypeScore(); }
+
+		void setValues(int amount, int temp, char type)
+		{
+			this->amount = amount;
+			this->temp = temp;
+			this->type = type;
+		}
+
+		int getAmount();
+		int getTemp();
+		char getType();
+
+		friend bool operator== (Storage Data1, Storage Data2);
+		friend bool operator!= (Storage Data1, Storage Data2);
+		friend bool operator< (Storage Data1, Storage Data2);
+		friend bool operator<= (Storage Data1, Storage Data2);
+		friend bool operator> (Storage Data1, Storage Data2);
+		friend bool operator>= (Storage Data1, Storage Data2);
+
+		int CalculateTypeScore();
+
+};
+
+int Storage::CalculateTypeScore()
+{
+	if (type == 'k' || type == 'K')
+	{
+		amount *= 1024;
+		return amount;
+	}
+	else if (type == 'm' || type == 'M')
+	{
+		amount = amount * 1024 * 1024;
+		return amount;
+	}
+}
+
+int Storage::getAmount()
+{
+	return amount;
+}
+int Storage::getTemp()
+{
+	return temp;
+}
+char Storage::getType()
+{
+	return type;
+}
+
+bool operator== (Storage Data1, Storage Data2)
+{
+	return Data1.amount == Data2.amount;
+}
+bool operator!= (Storage Data1, Storage Data2)
+{
+	return Data1.amount != Data2.amount;
+}
+bool operator< (Storage Data1, Storage Data2)
+{
+	return Data1.amount < Data2.amount;
+}
+bool operator<= (Storage Data1, Storage Data2)
+{
+	return Data1.amount <= Data2.amount;
+}
+bool operator> (Storage Data1, Storage Data2)
+{
+	return Data1.amount > Data2.amount;
+}
+bool operator>= (Storage Data1, Storage Data2)
+{
+	return Data1.amount >= Data2.amount;
+}
+
+int main()
+{
+	int amount1, amount2, temp1, temp2;
+	char type1, type2;
+
+	cout << "Enter the first storage type: " << endl;
+	cout << "b/B for byte" << endl << "k/K for kilobyte" << endl << "m/M for megabyte" << endl;
+	cin >> type1;
+	cout << "Enter first storage amount: "; cin >> amount1;
+
+	cout << "Enter the second storage type: " << endl;
+	cout << "b/B for byte" << endl << "k/K for kilobyte" << endl << "m/M for megabyte" << endl;
+	cin >> type2;
+	cout << "Enter second storage amount: "; cin >> amount2;
+
+	Storage Data1(amount1, type1), Data2(amount2, type2);
+
+	if (Data1 == Data2)
+	{
+		cout << "Storages are equal." << endl;
+	}
+
+	else if (Data1 > Data2)
+	{
+		cout << "First storage is bigger." << endl;
+	}
+
+	else if (Data1 < Data2)
+	{
+		cout << "Second storage is bigger." << endl;
+	}
+
+    return 0;
+}
