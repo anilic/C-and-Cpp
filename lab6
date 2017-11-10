@@ -1,0 +1,49 @@
+// ConsoleApplication6.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+#include <string>
+#include <iostream>
+#define PI 3.14
+
+using namespace std;
+
+class Circle
+{
+	protected:
+		double radius;
+		string color;
+
+	public:
+		Circle(double radius = 1.0, string color = "red") :radius(radius), color(color) { cout << "Circle's constructor." << endl; }
+		
+		void setAllDatas(double radius, string color)
+		{
+			this->radius = radius;
+			this->color = color;
+		}
+
+		double getArea()
+		{
+			return radius * radius * PI;
+		}
+};
+
+class Cylinder :public Circle
+{
+	private:
+		double height;
+	public:
+		void setHeight(double height) { this->height = height; }
+		double getHeight() { return height; }
+		double getVolume() { return height*getArea(); }
+		Cylinder(double hei, string color, double radius = 1.0) :Circle(radius, color), height(hei) { cout << "Cylinder's Constuctor."; }
+};
+
+int main()
+{
+	Cylinder C1(5, "Blue", 5)  ;
+
+    return 0;
+}
+
