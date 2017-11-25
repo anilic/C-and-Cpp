@@ -1,0 +1,183 @@
+COMPE 225 LAB 6 /2017-2018 Fall
+17/11/2017
+QUIZ 4
+Create classes according to the given UML diagram:
+ 
+Base Class Name: Projectile:
+Class Purpose: to hold information about a projectile’s position in the space. It should hold projectile’s X and Y positions.
+Your constructor should make the assigments where necessary . Usage of the getters & setters is up to you, but take note that they make this question a lot easier and efficient.
+Child Class Name: GuidedMissile:
+Class Purpose:This is a customized version of the projectile class. It has some extra variable fields. It represent a guided missile game object. This object locks on a X&Y position and move towards that position. 
+Your constructor should take X and Y position of the target, your missile’s X and Y position, fuel amount of the missile and fuel cost of the missile per move action. After that it should assign those variables. 
+MoveTowardsTarget(double ) method takes a parameter and it moves the missile’s X and Y coordinates with that parameter. (As you can see it’ll be a wise decision if you use Setters & Getters at your base class.) After moving towards the target destination according to the movement parameter you should decrease your fuel with the fuelcost*movementParameter. After that this method should check if the missile is in reach of the target via CanHit( ) method call. You should consider the fact that a missile can move only it has enough fuel left. You must check it via IsFuelLeft( ) method call before moving towards a target destination.
+IsFuelLeft( ) method returns true if there is fuel left enough to move the missile.
+Hint: Fuel should be bigger than fuelCost in order to move. (fuel>fuelCost)
+CanHit( ) method returns if the missile is in reach of it’s target. If it’s closer than 10 units you should assign isInReach VARIABLE as TRUE. You can do this assignment in MoveTowardsTarget(double) method too.
+Hint: If the following condition is met the missile can hit it’s target:
+sqrt(pow((targetX - GetPosX()), 2) + pow((targetY - GetPosY()), 2)) < 10
+Look at the flow chart given in order to construct a better  understanding of the algorithm:
+ 
+In your main method create a guided missile object. Take it’s parameters from the user. After that you’re going to create a loop that will continue untill the missile reach it’s target or missile’s fuel is depleted. (Hint: look for it’s IsFuelLeft( ) or IsInReach( ) method). In that loop you’ll take a move amount from the user and you’ll aply this movement amount to the missile object via MoveTowards(double) method’s parameter. Loop will finish if missile hits the target or missile’s fuel is depleted.
+Sample Output 1:
+Enter missile's X and Y positions: 0
+0
+Enter target's X and Y positions: 100
+100
+Enter the fuel amount on the missile's storage:500
+Enter the missile's fuel cost per move action:2
+//Missile’s constructor should print these
+Missile's X is:0
+Missile's Y is:0
+Missile locked on X: 100 and Y:100 coordinate...
+//Loop starts
+How much does the missile move:50
+Missile's X is:50
+Missile's Y is:50
+Fuel left:400
+
+How much does the missile move:50
+Missile's X is:100
+Missile's Y is:100
+Fuel left:300
+Missile hit the target
+//Loop ends because missile hit the target.
+---End of the program---
+Press any key to continue . . .
+
+Sample Output 2:
+Enter missile's X and Y positions: 0
+0
+Enter target's X and Y positions: 100
+100
+Enter the fuel amount on the missile's storage:500
+Enter the missile's fuel cost per move action:300
+Missile's X is:0
+Missile's Y is:0
+Missile locked on X: 100 and Y:100 coordinate...
+
+How much does the missile move:1
+Missile's X is:1
+Missile's Y is:1
+Fuel left:200
+Not enough fuel left to move a single move
+//Loop ends because missile’s fuel is depleted.
+---End of the program---
+Press any key to continue . . .
+
+//As you can see there isn’t enough fuel left to move. Every movement (1) consumes 300 fuel in this sample. So 200 fuel won’t be enough to move a single action.
+
+---------------------------------------------------------------
+#include "stdfax.h"
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+class Projectile
+{
+	protected:
+		int posX, posY;
+	public:
+		Projectile(int posX = 0, int posY = 0):posX(posX), posY(posY) { }
+		
+		void setData(int posX, int posY)
+		{
+			this->posX = posX;
+			this->posY = posY;
+		}
+
+		int getposX() { return posX; }
+		int getposY() { return posY; }
+};
+
+class GuidedMissile : public Projectile
+{
+	private:
+		int targetX, targetY;
+		double fuel, fuelCost;
+		
+	public:
+		GuidedMissile(int targetX = 100, int targetY = 100, int posX = 0, int posY = 0, double fuel = 500, double fuelCost = 50, bool isInReach = false) :Projectile(posX, posY), targetX(targetX), targetY(targetY), fuel(fuel), fuelCost(fuelCost) { }
+		
+		bool isInReach()
+		{
+			if (sqrt(pow((targetX - getposX()), 2) + pow((targetY - getposY()), 2)) < 10)
+			{
+				return true;
+			}
+			else
+				return false;
+		}
+		bool isFuelLeft()
+		{
+			if (fuel > 0 && fuel > fuelCost)
+				return true;
+			else
+				return false;
+		}
+		bool CanHit()
+		{
+			if (isInReach() == true)
+				return true;
+			else
+				return false;
+		}
+
+		void MoveTowards(double moveAmount)
+		{
+			if (isFuelLeft() == true)
+			{
+				posX += moveAmount;
+				posY += moveAmount;
+				fuel -= fuelCost * moveAmount;
+				
+				if (CanHit() == true)
+				{
+					isInReach() == true;
+					cout << "Fuel left: " << getFuel() << endl;
+					cout << "You hit the target." << endl;
+				}
+				else
+					isFuelLeft();
+			}
+		}
+
+		void setAllData(int targetX, int targetY, double fuel, double fuelCost)
+		{
+			this->targetX = targetX;
+			this->targetY = targetY;
+			this->fuel = fuel;
+			this->fuelCost = fuelCost;
+		}
+
+		int gettargetX() { return targetX; }
+		int gettargetY() { return targetY; }
+		double getFuel() { return fuel; }
+		double getFuelCost() { return fuelCost; }
+
+};
+
+int main()
+{
+	int targetX, targetY, posX, posY;
+	double fuel, fuelCost, moveAmount;
+	cout << "Enter missle's X and Y positions: "; cin >> posX >> posY;
+	cout << "Enter target's X and Y positions: "; cin >> targetX >> targetY;
+	cout << "Enter the fuel amount on the missle's storage: "; cin >> fuel;
+	cout << "Enter the missle's fuel cost per move ation: "; cin >> fuelCost;
+
+	GuidedMissile Missile(targetX, targetY, posX, posY, fuel, fuelCost);
+	for (; Missile.isFuelLeft() ;)
+	{
+		cout << endl << "How much does the missile move?: "; cin >> moveAmount;
+		Missile.MoveTowards(moveAmount);
+		if (Missile.isInReach()) 
+			break;
+		cout << "Missile's X is: " << Missile.getposX() << endl;
+		cout << "Missile's Y is: " << Missile.getposY() << endl;
+		cout << "Fuel left: " << Missile.getFuel() << endl;
+	}
+	cout << endl << "---End of the program.---" << endl;
+
+	return 0;
+}
