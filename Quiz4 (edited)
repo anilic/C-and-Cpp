@@ -67,7 +67,7 @@ Press any key to continue . . .
 //As you can see there isn’t enough fuel left to move. Every movement (1) consumes 300 fuel in this sample. So 200 fuel won’t be enough to move a single action.
 
 ---------------------------------------------------------------
-#include "stdfax.h"
+#include "stdafx.h"
 #include <iostream>
 #include <cmath>
 
@@ -75,85 +75,105 @@ using namespace std;
 
 class Projectile
 {
-	protected:
-		int posX, posY;
-	public:
-		Projectile(int posX = 0, int posY = 0):posX(posX), posY(posY) { }
-		
-		void setData(int posX, int posY)
-		{
-			this->posX = posX;
-			this->posY = posY;
-		}
+protected:
+	int posX, posY;
+public:
+	Projectile(int posX = 0, int posY = 0) :posX(posX), posY(posY) { }
 
-		int getposX() { return posX; }
-		int getposY() { return posY; }
+	void setData(int posX, int posY)
+	{
+		this->posX = posX;
+		this->posY = posY;
+	}
+
+	int getposX() { return posX; }
+	int getposY() { return posY; }
+
+	/*int exitFunction()
+	{
+		return 0;
+	}*/
 };
 
 class GuidedMissile : public Projectile
 {
-	private:
-		int targetX, targetY;
-		double fuel, fuelCost;
+private:
+	int targetX, targetY, tempX, tempY;
+	double fuel, fuelCost;
+
+public:
+	GuidedMissile(int targetX = 100, int targetY = 100, int posX = 0, int posY = 0, double fuel = 500, double fuelCost = 50, bool isInReach = false) :Projectile(posX, posY), targetX(targetX), targetY(targetY), fuel(fuel), fuelCost(fuelCost) { }
+
+	bool isInReach()
+	{
+		if (sqrt(pow((targetX - getposX()), 2) + pow((targetY - getposY()), 2)) < 10 || getposX() >= targetX || getposY() >= targetY)
+			return true;
+		else
+			return false;
+	}
+
+	bool isFuelLeft()
+	{
+		if (fuel > 0 && fuel >= fuelCost)
+			return true;
+		else
+			return false;
+	}
+
+	bool CanHit()
+	{
+		if (isInReach() == true)
+			return true;
+		else
+			return false;
+	}
+
+	void MoveTowards(double moveAmount)
+	{
 		
-	public:
-		GuidedMissile(int targetX = 100, int targetY = 100, int posX = 0, int posY = 0, double fuel = 500, double fuelCost = 50, bool isInReach = false) :Projectile(posX, posY), targetX(targetX), targetY(targetY), fuel(fuel), fuelCost(fuelCost) { }
-		
-		bool isInReach()
+		if (isFuelLeft() == true)
 		{
-			if (sqrt(pow((targetX - getposX()), 2) + pow((targetY - getposY()), 2)) < 10)
+			tempX = posX;
+			tempY = posY;
+			posX += moveAmount;
+			posY += moveAmount;
+			fuel -= fuelCost * moveAmount;
+			
+			if (fuel <= 0)
 			{
-				return true;
+				cout << "You do not have enough fuel to move." << endl;
+				cout << "Missle's X: " << tempX << endl;
+				cout << "Missle's Y: " << tempY << endl;
 			}
 			else
-				return false;
-		}
-		bool isFuelLeft()
-		{
-			if (fuel > 0 && fuel > fuelCost)
-				return true;
-			else
-				return false;
-		}
-		bool CanHit()
-		{
-			if (isInReach() == true)
-				return true;
-			else
-				return false;
-		}
-
-		void MoveTowards(double moveAmount)
-		{
-			if (isFuelLeft() == true)
 			{
-				posX += moveAmount;
-				posY += moveAmount;
-				fuel -= fuelCost * moveAmount;
-				
-				if (CanHit() == true)
-				{
-					isInReach() == true;
-					cout << "Fuel left: " << getFuel() << endl;
+				cout << "Fuel left: " << getFuel() << endl;
+				cout << "Missle's X: " << getposX() << endl;
+				cout << "Missle's Y: " << getposY() << endl;
+			}
+
+			if (CanHit() == true)
+			{
+				if (isInReach() == true)
 					cout << "You hit the target." << endl;
-				}
-				else
-					isFuelLeft();
 			}
+			else
+				isFuelLeft();				
 		}
+		
+	}
+	void setAllData(int targetX, int targetY, double fuel, double fuelCost)
+	{
+		this->targetX = targetX;
+		this->targetY = targetY;
+		this->fuel = fuel;
+		this->fuelCost = fuelCost;
+	}
 
-		void setAllData(int targetX, int targetY, double fuel, double fuelCost)
-		{
-			this->targetX = targetX;
-			this->targetY = targetY;
-			this->fuel = fuel;
-			this->fuelCost = fuelCost;
-		}
-
-		int gettargetX() { return targetX; }
-		int gettargetY() { return targetY; }
-		double getFuel() { return fuel; }
-		double getFuelCost() { return fuelCost; }
+	int gettargetX() { return targetX; }
+	int gettargetY() { return targetY; }
+	double getFuel() { return fuel; }
+	double getFuelCost() { return fuelCost; }
 
 };
 
@@ -164,18 +184,15 @@ int main()
 	cout << "Enter missle's X and Y positions: "; cin >> posX >> posY;
 	cout << "Enter target's X and Y positions: "; cin >> targetX >> targetY;
 	cout << "Enter the fuel amount on the missle's storage: "; cin >> fuel;
-	cout << "Enter the missle's fuel cost per move ation: "; cin >> fuelCost;
+	cout << "Enter the missle's fuel cost per move action: "; cin >> fuelCost;
 
 	GuidedMissile Missile(targetX, targetY, posX, posY, fuel, fuelCost);
-	for (; Missile.isFuelLeft() ;)
+	for (; Missile.isFuelLeft();)
 	{
 		cout << endl << "How much does the missile move?: "; cin >> moveAmount;
 		Missile.MoveTowards(moveAmount);
-		if (Missile.isInReach()) 
+		if (Missile.isInReach())
 			break;
-		cout << "Missile's X is: " << Missile.getposX() << endl;
-		cout << "Missile's Y is: " << Missile.getposY() << endl;
-		cout << "Fuel left: " << Missile.getFuel() << endl;
 	}
 	cout << endl << "---End of the program.---" << endl;
 
