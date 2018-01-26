@@ -1,0 +1,116 @@
+/* This C++ program calculates the day of year by taking inputs from user such as: day, month and year. 
+(Formula needs a correction)*/
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class DayofWeek
+{
+private:
+	int day, month, year;
+	string dayofweek;
+
+public:
+	DayofWeek();
+	DayofWeek(int day, int month, int year);
+
+	void setAllData(int day, int month, int year)
+	{
+		this->day = day;
+		this->month = month;
+		this->year = year;
+	}
+	void setDayofWeek(string dayofweek) { this->dayofweek = dayofweek; }
+
+	int getDay();
+	int getMonth();
+	int getYear();
+
+	string getDayofWeek();
+
+	int CalculatetheDayofWeek(int day, int month, int year);
+
+};
+
+int DayofWeek::CalculatetheDayofWeek(int day, int month, int year)
+{
+	int dd = ((day + (int)((month + 1)*2.6) + year + (int)(year / 4) + 6 * (int)(year / 100) + (int)(year / 400) + 6) % 7);
+	return dd;
+}
+
+int DayofWeek::getDay()
+{
+	return day;
+}
+
+int DayofWeek::getMonth()
+{
+	return month;
+}
+
+int DayofWeek::getYear()
+{
+	return year;
+}
+
+string DayofWeek::getDayofWeek()
+{
+	return dayofweek;
+}
+
+DayofWeek::DayofWeek()
+{
+	setAllData(0, 0, 0);
+}
+
+DayofWeek::DayofWeek(int day, int month, int year)
+{
+	setAllData(day, month, year);
+
+	int temp = CalculatetheDayofWeek(day, month, year);
+
+	switch (temp)
+	{
+	case 0:
+		setDayofWeek("Sunday");
+		break;
+	case 1:
+		setDayofWeek("Monday");
+		break;
+	case 2:
+		setDayofWeek("Tuesday");
+		break;
+	case 3:
+		setDayofWeek("Wednesday");
+		break;
+	case 4:
+		setDayofWeek("Thursday");
+		break;
+	case 5:
+		setDayofWeek("Friday");
+		break;
+	case 6:
+		setDayofWeek("Saturday");
+		break;
+	}
+
+}
+
+
+int main()
+{
+
+	int day, month, year;
+
+	cout << "Please enter the day 1-31: "; cin >> day;
+	cout << "Please enter the month 1-12: "; cin >> month;
+	cout << "Please enter the year 0-... : "; cin >> year;
+
+	DayofWeek dd(day, month, year);
+
+	cout << "The day you're looking for is: " << dd.getDayofWeek() << endl;
+
+	return 0;
+}
