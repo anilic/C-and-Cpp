@@ -1,0 +1,45 @@
+#pragma once
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <assert.h>
+
+using namespace std;
+
+struct Word
+{
+	string word;
+	int frequency;
+};
+
+template <class T>
+struct node
+{
+	T info;
+	node<T> *link;
+};
+
+template <class T>
+class LinkedList
+{
+protected:
+	node<T> *head, *last;
+	int count;
+public:
+	LinkedList();
+	~LinkedList();
+	bool emptyList();
+	int length();
+	void destroyList();
+	node<T>* search(T&);
+	void insertFirst(T&); //by sending the address of T&, we are saving our memory space but T would work as well as T&
+	void insertLast(T&);
+	void deleteNode(T&);
+	friend ostream& operator<< <> (ostream&, LinkedList<T>&);
+
+	string stopWordsArray[174];
+	bool isStopWord(string word);
+	void addToArray(string sArray[], string element);
+	double calculateProduct(LinkedList firstDocList, LinkedList secondDocList);
+	double calculateDivider(LinkedList firstDocList, LinkedList secondDocList);
+};
