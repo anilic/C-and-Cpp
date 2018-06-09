@@ -1,0 +1,83 @@
+#pragma once
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <assert.h> 
+
+using namespace std;
+
+template <class T>
+class Queue
+{
+public:
+	Queue(int = 100);
+	~Queue() { delete[]list; };
+	bool isEmpty() { return (count == 0); };
+	bool isFull() { return (count == maxsize); };
+	void destroyQueue();
+	T frontq();
+	T backq();
+	void insert(T&);
+	T deleteQueue();
+	//private:
+	int maxsize, count, front, rear;
+	T *list;
+};
+
+template <class T>
+Queue<T>::Queue(int max)
+{
+	maxsize = max;
+	list = new T[max];
+	front = 0;
+	rear = max - 1;
+	count = 0;
+}
+
+template <class T>
+void Queue<T>::destroyQueue()
+{
+	front = count = 0;
+	rear = max - 1;
+}
+
+template <class T>
+T Queue<T>::frontq()
+{
+	assert(!isEmpty());
+	return list[front];
+}
+
+template <class T>
+T Queue<T>::backq()
+{
+	assert(!isEmpty());
+	return list[rear];
+}
+
+template <class T>
+void Queue<T>::insert(T& item)
+{
+	if (!isFull())
+	{
+		rear = (rear + 1) % maxsize;
+		list[rear] = item;
+		count++;
+	}
+	else
+	{
+		cerr << "No space left in queue";
+	}
+}
+
+template <class T>
+T Queue<T>::deleteQueue()
+{
+	T temp;
+	assert(!isEmpty());
+	temp = list[front];
+	front = (front + 1) % maxsize;
+	count--;
+	return temp;
+}
+
