@@ -1,0 +1,451 @@
+/*
+**************************************************************************************************************************
+	   NOTE: SORT AND CALCULATION SECTIONS SHOULD BE CORRECTED 
+**************************************************************************************************************************
+*/
+
+#include "stdafx.h"
+#include "LinkedList.h"
+#include <assert.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cmath>
+
+using namespace std;
+
+template <class T>
+LinkedList<T>::LinkedList()
+{
+	count = 0;
+	head = last = NULL;
+}
+
+template <class T>
+bool LinkedList<T>::emptyList() { return head == NULL; }
+
+template <class T>
+int LinkedList<T>::length() { return count; }
+
+template <class T>
+node<T>* LinkedList<T>::search(T& item)		//Search
+{
+	bool found = false;
+	node<T> *p = head;
+
+	while (p != NULL && !found)
+	{
+		if (p->info == item)
+			found = true;
+		else
+			p = p->link;
+	}
+
+	return p;
+}
+
+template <class T>
+void LinkedList<T>::insertFirst(T& item)
+{
+	node<T> *p = new node<T>;				//created an empty node
+	p->info = item;
+	p->link = head;
+	head = p;
+
+	if (last == NULL)
+		last = p;
+
+	count++;
+}
+
+template <class T>
+void LinkedList<T>::insertLast(T& item)
+{
+	node<T>* p = new node<T>;
+	p->info = item;
+	p->link = NULL;
+
+	if (head != NULL)
+	{
+		last->link = p;
+		last = p;
+	}
+
+	else
+		head = last = p;
+
+	count++;
+}
+
+template <class T>
+void LinkedList<T>::deleteNode(T& item)
+{
+	node<T> *p, *q;
+	bool found = false;
+
+	if (head == NULL)
+		cerr << "List is already empty!";
+	else
+	{
+		if (head->info == item)
+		{
+			p = head;
+			head = head->link;
+			delete p;
+			count--;
+
+			if (head == NULL)
+				last = NULL;
+		}
+		else
+		{
+			p = head;
+			q = head->link;
+
+			while (q != NULL && !found)
+			{
+				if (q->info == item)
+					found = true;
+				else
+				{
+					p = q;
+					q = q->link;
+				}
+			}
+
+			if (found)
+			{
+				p->link = q->link;
+				count--;
+
+				if (last == q)
+					last = p;
+
+				delete q;
+			}
+		}
+	}
+}
+
+template <class T>
+void LinkedList<T>::destroyList()
+{
+	node<T> *p;
+
+	while (head != NULL)
+	{
+		p = head;
+		head = head->link;
+		delete p;
+	}
+
+	head = last = NULL;
+	count = 0;
+}
+
+template <class T>
+LinkedList<T>::~LinkedList() { destroyList(); }
+
+template <class T>
+ostream& operator << <> (ostream& os, LinkedList<T> & list)
+{
+	node<T> *p = list.head;
+
+	while (p != NULL)
+	{
+		os << p->info;
+		p = p->link;
+	}
+
+	return os;
+}
+
+string stopWordsArray[174]; //assigned as 174 because there are 174 stop words in file
+
+bool isStopWord(string word)
+{
+	for (int i = 0; i < stopWordsArray->length(); i++)
+	{
+		if (word == stopWordsArray[i])
+			return true;
+		else
+			return false;
+	}
+}
+
+/*string *addToArray(string sArray[], string element)
+{
+	string *newArray; 
+
+	if ((sArray->size() == 1) && (sArray[0].empty()))
+	{
+		newArray = new string[sArray->size()];
+	}
+	else
+	{
+		newArray = new string[sArray->size() + 1];
+	}
+
+	if (!sArray[0].empty())
+	{
+		for (int i = 0; i < sArray->size(); i++)						//TRYOUT FOR DYNAMIC ARRAY
+		{
+			newArray[i] = sArray[i];
+		}
+	}
+
+	newArray[sArray->size()] = element;
+
+	if(sArray->size() > 1)
+		delete[] sArray;		//empty sArray's content
+	
+	sArray = NULL;
+	return newArray;
+
+	//copy(sArray, sArray, NULL);
+	//copy(sArray, sArray, newArray); //location, size?, target data 
+}*/
+
+/* *************************************************************************
+
+double LinkedList<Word>::calculateProduct(LinkedList firstDocList, LinkedList secondDocList)
+{
+	double sum = 0;
+
+	//multiplying common values will be enough for calculation, 
+	//since other values that are multiplied by zero won't effect the total sum, we dont need to put them in the calculation 
+
+	while (*firstDocList->link != NULL)
+	{
+		node<T> *x = new node<T>;
+		x = secondDocList.search(firstDocList.doc1Words.word);
+		
+		if (x != NULL)
+		{
+			sum += (firstDocList.doc1Words.frequency * x.doc2Words.frequency);
+		}
+
+		firstDocList = firstDocList->link;
+	}
+
+	return sum;
+}
+
+*************************************************************************** */
+
+/* *************************************************************************
+
+
+double LinkedList<Word>::calculateProduct(LinkedList firstDocList, LinkedList secondDocList)
+{
+	double sum1 = 0, sum2 = 0;
+
+	while (*firstDocList->link != NULL)
+	{
+		sum1 += (firstDocList.doc1Words.frequency * firstDocList.doc1Words.frequency);
+
+		firstDocList = firstDocList->link;
+	}
+
+	sum1 = sqrt(sum1);
+
+	while (*secondDocList->link != NULL)
+	{
+		sum2 += (secondDocList.doc2Words.frequency * secondDocList.doc2Words.frequency);
+
+		secondDocList = secondDocList->link;
+	}
+
+	sum2 = sqrt(sum2);
+
+	return sum1 * sum2;
+}
+
+*************************************************************************** */
+
+
+int main()
+{
+	ifstream doc1, doc2, stopWords;
+	string reader1, reader2, reader3;
+	LinkedList<Word> firstDocList, secondDocList, stopWordList;
+	int swIndex = 0;									//stopWordsArrayIndex
+	int ct1 = 0, ct2 = 0, ct3 = 0;
+	static char nonAlpha[22] = { ':', '"', '+', '#', '^', '~', ')', '(', ' ', ',', '.', '!', '?', '*', '/', '{', '}', '=', '_', '-', '[', ']' };
+	int currentIndex1 = 0, currentIndex2 = 0;
+
+	string doc1Words[1000] = { }, doc2Words[1000] = { };
+
+	doc1.open("document1.txt");
+	doc2.open("document2.txt");
+	stopWords.open("StopWords.txt");
+
+	while (!stopWords.eof())
+	{
+		stopWords >> reader3;							//read stopwords text file into reader3
+		stopWordsArray[swIndex] = reader3;				//fill array with stopword elements
+		swIndex++;
+	}
+
+	while (!doc1.eof() && !doc2.eof())
+	{
+		doc1 >> reader1;								//read first document text file into reader1
+		doc2 >> reader2;								//read second document text file into reader2
+
+		for (int i = 0; i < reader1[i] != NULL; i++)	//search for non-alphanumerical characters in document1
+		{
+			for (int j = 0; j < 22; j++)
+				if (reader1[i] == nonAlpha[j])
+					reader1[i] = NULL;
+			
+			if (isupper(reader1[i]))					//if string consists uppercase char, convert it into lowercase 
+				reader1[i] = tolower(reader1[i]);
+		}
+
+		if (!isStopWord(reader1))
+		{
+			doc1Words[currentIndex1] = reader1;
+			currentIndex1++;
+		}
+
+		for (int i = 0; i < reader2[i] != NULL; i++)	//search for non-alphanumerical characters in document2
+		{
+			for (int j = 0; j < 22; j++)
+				if (reader2[i] == nonAlpha[j])
+					reader2[i] = NULL;	
+
+			if (isupper(reader2[i]))
+				reader2[i] = tolower(reader2[i]);	
+		}
+
+		if (!isStopWord(reader2))
+		{
+			doc2Words[currentIndex2] = reader2;
+			currentIndex2++;
+		}
+
+		for (int i = 0; i < reader3[i] != NULL; i++)	//search for non-alphanumerical characters in stopwords
+		{
+			for (int j = 0; j < 22; j++)
+				if (reader3[i] == nonAlpha[j])
+					reader3[i] = NULL;
+		}
+	}
+	
+	string temp;
+
+	for (int i = 0; i < 1000; i++)						//frequency check1
+	{			
+		temp = doc1Words[i];
+
+		if (temp != "")
+		{
+			if (doc1Words[i] != "")
+			{
+				Word word1;
+				int ct = 0;
+
+				word1.word = temp;
+
+				for (int j = 0; j < 1000; j++)
+				{
+					if (doc1Words[j] != "" && (temp == doc1Words[j]))
+					{
+						ct++;
+						doc1Words[j] = "";
+					}
+				}
+
+				word1.frequency = ct;
+
+				if (word1.frequency != 0)
+					firstDocList.insertFirst(word1);
+
+				//cout << word1.word << word1.frequency << endl;
+			}
+
+			Word word2;
+			int ct = 0;
+
+			word2.word = temp;
+
+			for (int j = 0; j < 1000; j++)
+			{
+				if (doc2Words[j] != "" && (temp == doc2Words[j]))
+				{
+					ct++;
+					doc2Words[j] = "";
+				}
+			}
+
+			word2.frequency = ct;
+			
+			if(word2.frequency != 0)
+				secondDocList.insertFirst(word2);
+
+			//cout << word2.word << word2.frequency << endl;
+		}
+	}
+
+	for (int i = 0; i < 1000; i++)                        //frequency check2
+	{
+		temp = doc2Words[i];
+
+		if (temp != "")
+		{
+
+			if (doc2Words[i] != "")
+			{
+				Word word2;
+				int ct = 0;
+
+				word2.word = temp;
+
+				for (int j = 0; j < 1000; j++)
+				{
+					if (doc2Words[j] != "" && (temp == doc2Words[j]))
+					{
+						ct++;
+						doc2Words[j] = "";
+					}
+				}
+
+				word2.frequency = ct;
+
+				if (word2.frequency != 0)
+					secondDocList.insertFirst(word2);
+				
+				//cout << word2.word << word2.frequency << endl;
+			}
+
+			Word word1;
+			int ct = 0;
+
+			word1.word = temp;
+
+			for (int j = 0; j < 1000; j++)
+			{
+				if (doc1Words[j] != "" && (temp == doc1Words[j]))
+				{
+					ct++;
+					doc1Words[j] = "";
+				}
+			}
+
+			word1.frequency = ct;
+
+			if (word1.frequency != 0)
+				firstDocList.insertFirst(word1);
+
+			//cout << word1.word << word1.frequency << endl;
+		}
+	}
+
+	/* ************************** CALCULATE RESULT ******************************* */
+
+	//cout << "Product sum: " << calculateProduct(firstDocList, secondDocList) << endl;
+	//cout << "Divider: " << calculateDivider(firstDocList, secondDocList) << endl;
+	//cout << "Cosine similarity between two documents is: " << (1 / calculateDivider(firstDocList, secondDocList) << endl;
+
+	return 0;
+}
