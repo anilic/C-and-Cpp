@@ -1,0 +1,95 @@
+#include "stdafx.h"
+#include "Queue.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <assert.h> 
+
+using namespace std;
+
+class ProcessorNodes
+{
+	public:
+		ProcessorNodes() { processorQueue = new Queue<double>(); }
+		~ProcessorNodes() { /* Destroy Queue */ }
+
+		double weather, humidity;
+		Queue<double> *processorQueue;
+};
+
+int main()
+{
+	ProcessorNodes *firstProcessor, *secondProcessor;
+
+	firstProcessor = new ProcessorNodes();
+	secondProcessor = new ProcessorNodes();
+
+	string temp, part;
+	char charArr[10];
+	int dayCt = 1;
+	double weatherCt = 0, humidityCt = 0, sum = 0;
+
+	ifstream input;
+	input.open("input.txt");
+
+	if (!input)
+		cerr << "Unable to open input file!" << endl;
+
+	else
+	{
+		while (!input.eof())
+		{
+			getline(input, temp);
+			stringstream ss(temp);
+			getline(ss, part, ':');
+			strcpy_s(charArr, part.c_str()); //pass taken character to char array
+	
+			if (charArr[0] != 'D')
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					getline(ss, part, ':');
+					getline(ss, part, ':');
+					strcpy_s(charArr, part.c_str()); //pass taken character to char array
+
+					if (charArr[0] == 'W')
+					{
+						getline(ss, part, ',');
+						double b = stod(part.c_str()); //convert from string to double
+						firstProcessor->processorQueue->insert(b);
+					}
+
+					else if (charArr[0] == 'H')
+					{
+						getline(ss, part, ',');
+						double b = stod(part.c_str()); //convert from string to double
+						secondProcessor->processorQueue->insert(b);
+					}
+				}
+
+				cout << "Day " << dayCt << ": " << endl;
+				weatherCt = firstProcessor->processorQueue->count;
+
+				while (!firstProcessor->processorQueue->isEmpty())
+					sum += firstProcessor->processorQueue->deleteQueue();
+
+				cout << "Weather temperature: " << sum / weatherCt;
+
+				sum = 0;
+
+				humidityCt = secondProcessor->processorQueue->count;
+
+				while (!secondProcessor->processorQueue->isEmpty())
+					sum += secondProcessor->processorQueue->deleteQueue();
+
+				cout << "Humidity percentage: " << sum / humidityCt;
+			}
+
+			else
+				dayCt++;
+		}
+	}
+    return 0;
+}
+
